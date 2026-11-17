@@ -151,18 +151,45 @@ def path_is_owned(path):
     return path in load_state().get("created", {}).get("paths", [])
 
 
+def bin_entries():
+    try:
+        return set(os.listdir(LOCAL_BIN))
+    except OSError:
+        return set()
+
+
+def record_new_bin_entries(before):
+    """Record entries a tool added to ~/.local/bin on its own, so uninstall
+    can remove them later (uv's python shims, npm's extra opencode links)."""
+    for name in sorted(bin_entries() - before):
+        record_created_path(os.path.join(LOCAL_BIN, name))
+
+
 def venv_python_version():
-    config = os.path.join(VENV_DIR, "pyvenv.cfg")
     if not os.path.isfile(os.path.join(VENV_DIR, "bin", "python")):
         return None
+    # uv writes "version_info = X.Y.Z"; CPython's venv writes "version =
+    # X.Y.Z". Accept either, then fall back to asking the interpreter.
+    config = os.path.join(VENV_DIR, "pyvenv.cfg")
     try:
         with open(config) as fh:
             for line in fh:
-                match = re.match(r"\s*version\s*=\s*(\d+\.\d+\.\d+)\s*$", line)
+                match = re.match(r"\s*(?:version_info|version)\s*=\s*(\d+\.\d+\.\d+)\s*$", line)
                 if match:
                     return match.group(1)
     except OSError:
-        return None
+        pass
+    try:
+        with open(os.devnull, "w") as devnull:
+            proc = subprocess.run(
+                [os.path.join(VENV_DIR, "bin", "python"), "-c",
+                 "import sys; print('%d.%d.%d' % sys.version_info[:3])"],
+                stdout=subprocess.PIPE, stderr=devnull, timeout=30,
+                universal_newlines=True)
+        if proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+    except Exception:
+        pass
     return None
 
 
@@ -508,9 +535,12 @@ def step_python():
     if DRY_RUN:
         say("  (dry run) would install Python %s with uv" % PIN_PYTHON)
         return True
+    bin_before = bin_entries()
     code, _ = run(["uv", "python", "install", "--default", PIN_PYTHON], timeout=1800)
     if code != 0:
         raise StepError("Python %s could not be installed. Run me again." % PIN_PYTHON)
+    if not DRY_RUN:
+        record_new_bin_entries(bin_before)
     if os.path.lexists(VENV_DIR):
         if not path_is_owned(VENV_DIR):
             raise StepError("An existing Python work folder has the wrong version and was left untouched: %s" % VENV_DIR)
@@ -556,6 +586,7 @@ def step_node():
         extracted = os.path.join(work, "node-v%s-linux-%s" % (PIN_NODE, ARCH_NODE))
         if not os.path.isdir(extracted):
             raise StepError("The Node.js download did not contain the expected program folder.")
+        os.makedirs(OPT_DIR, exist_ok=True)
         os.rename(extracted, node_home)
         record_created_path(node_home)
     for tool in ("node", "npm", "npx", "corepack"):
@@ -697,12 +728,14 @@ def step_opencode(state, skip_auth):
         if os.path.lexists(opencode_path) and not path_is_owned(opencode_path):
             raise StepError("An existing OpenCode entry was not created by this setup and was left untouched: %s" % opencode_path)
         say("Installing OpenCode %s." % PIN_OPENCODE)
+        bin_before = bin_entries()
         code, _ = run(["npm", "install", "-g", "--prefix", os.path.join(HOME, ".local"),
                        "@opencode/cli@%s" % PIN_OPENCODE], timeout=1800)
         if DRY_RUN:
             return True
         if code != 0:
             raise StepError("OpenCode could not be installed. Run me again.")
+        record_new_bin_entries(bin_before)
         if version_of("opencode") != PIN_OPENCODE:
             raise StepError("OpenCode installed but does not report version %s." % PIN_OPENCODE)
         if os.path.lexists(opencode_path):
@@ -805,7 +838,9 @@ def doctor(write_report=True):
     check(code == 0, "Signed in to GitHub", warn_only=True)
     check(version_of("uv") == PIN_UV, "uv", version_of("uv") or "missing")
     check(version_of("python3") == PIN_PYTHON, "Python", version_of("python3") or "missing")
-    check(os.path.isdir(VENV_DIR), "Python work folder (venv)", warn_only=True)
+    venv_version = venv_python_version()
+    check(venv_version == PIN_PYTHON, "Python work folder (venv)",
+          venv_version or "missing", warn_only=True)
     check(version_of("node") == PIN_NODE, "Node.js", version_of("node") or "missing")
     check(version_of("bun") == PIN_BUN, "Bun", version_of("bun") or "missing", warn_only=True)
     check(version_of("bd") == PIN_BD, "Beads (bd)", version_of("bd") or "missing")
