@@ -40,10 +40,9 @@ Install order, each step check-before-act with version verification against the 
 4. uv 0.13.8 (tarball, sha256 sidecar verified), then Python 3.15.2 via `uv python install --default`, plus a seeded venv at `~/.venvs/baseline`
 5. Node.js 26.13.1 (tarball, sha256 verified; symlinks into `~/.local/bin`)
 6. Bun 1.4.4 (zip, sha256 verified against the release sums)
-7. Beads 1.3.4 (tarball, sha256 verified)
-8. Godot 4.7.2 Linux (zip, sha512 verified; linked as `godot`)
-9. OpenCode 2.3.0 (`npm install -g @opencode/cli`), user config created only if absent (default model added to an existing config only if it has none), then the OpenCode sign-in pause, which states that the kit model is free
-10. Starter Godot project created at `~/my-first-game`
+7. Godot 4.7.2 Linux (zip, sha512 verified; linked as `godot`)
+8. OpenCode 2.3.0 (`npm install -g @opencode/cli`), user config created only if absent (default model added to an existing config only if it has none), then the OpenCode sign-in pause, which states that the kit model is free
+9. Starter Godot project created at `~/my-first-game`
 
 Then a doctor pass runs automatically. Doctor prints the tick list, and writes `~/godot-baseline-report.txt` (versions, check results, log location): the file to include if you ask for help. The doctor checks the starter project exists but does not run Godot's project import.
 

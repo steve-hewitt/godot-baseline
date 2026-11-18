@@ -2,7 +2,7 @@
 # =============================================================================
 # godot-baseline setup script -- runs INSIDE WSL (Ubuntu) and installs
 # the baseline: system packages, GitHub CLI, uv + Python, Node, Bun,
-# Beads, Godot (headless), OpenCode, and a starter Godot project.
+# Godot (headless), OpenCode, and a starter Godot project.
 # GUIDE.md starts this script with one typed line from the Windows side
 # (there is no Windows-side script in this kit); it can also be run by hand.
 #
@@ -50,7 +50,6 @@ import zipfile
 # Pins. One place, on purpose. Current latest of each, checked upstream
 # on 2026-11-16. See docs/DESIGN.md.
 # ---------------------------------------------------------------------------
-PIN_BD = "1.3.4"
 PIN_GH = "2.104.0"
 PIN_UV = "0.13.8"
 PIN_PYTHON = "3.15.2"
@@ -631,32 +630,6 @@ def step_bun():
     return True
 
 
-def step_beads():
-    if version_of("bd") == PIN_BD:
-        return True
-    say("Installing Beads (bd) %s." % PIN_BD)
-    name = "beads_%s_linux_%s.tar.gz" % (PIN_BD, ARCH_GH)
-    base = "https://github.com/gastownhall/beads/releases/download/v%s/" % PIN_BD
-    archive = download(base + name, os.path.join(DL_DIR, name))
-    if DRY_RUN:
-        return True
-    sums = fetch_text(base + "checksums.txt")
-    verify_from_sums(sums, name, archive, "sha256")
-    work = os.path.join(DL_DIR, "bd-extract")
-    shutil.rmtree(work, ignore_errors=True)
-    os.makedirs(work, exist_ok=True)
-    extract_tar(archive, work)
-    binary = find_file(work, "bd")
-    if not binary:
-        raise StepError("The Beads download did not contain the bd program.")
-    install_file(binary, os.path.join(LOCAL_BIN, "bd"))
-    if DRY_RUN:
-        return True
-    if version_of("bd") != PIN_BD:
-        raise StepError("Beads installed but does not report version %s." % PIN_BD)
-    return True
-
-
 def step_godot():
     godot_home = os.path.join(OPT_DIR, "godot-%s" % PIN_GODOT)
     binary_name = "Godot_v%s-stable_linux.%s" % (PIN_GODOT, ARCH_GODOT)
@@ -843,7 +816,6 @@ def doctor(write_report=True):
           venv_version or "missing", warn_only=True)
     check(version_of("node") == PIN_NODE, "Node.js", version_of("node") or "missing")
     check(version_of("bun") == PIN_BUN, "Bun", version_of("bun") or "missing", warn_only=True)
-    check(version_of("bd") == PIN_BD, "Beads (bd)", version_of("bd") or "missing")
     gv = version_of("godot")
     check(bool(gv and gv.startswith(PIN_GODOT)), "Godot for the AI", gv or "missing")
     check(version_of("opencode") == PIN_OPENCODE, "OpenCode", version_of("opencode") or "missing")
@@ -888,7 +860,6 @@ def do_install(args, repair=False):
         ("python", "Python", lambda: step_python()),
         ("node", "Node.js", lambda: step_node()),
         ("bun", "Bun", lambda: step_bun()),
-        ("beads", "Beads", lambda: step_beads()),
         ("godot", "Godot", lambda: step_godot()),
         ("opencode", "OpenCode", lambda: step_opencode(state, args.skip_auth)),
     ]

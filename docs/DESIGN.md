@@ -23,10 +23,9 @@ Take a clean Windows 11 machine to a working Godot development baseline: WSL2 Ub
 4. GitHub CLI (`gh`), with a browser sign-in early in the run; git identity is configured from the account
 5. uv, and Python 3.15.2 installed by uv (Ubuntu's apt Python cannot reach the pin, and a source build would require build-essential)
 6. Node.js LTS, and Bun
-7. Beads (`bd`) 1.3.4
-8. Godot 4.7.2 for Linux, headless, the copy the AI uses to import and test games
-9. OpenCode 2.3.0, with the user's own account login
-10. A starter game project at `~/my-first-game`
+7. Godot 4.7.2 for Linux, headless, the copy the AI uses to import and test games
+8. OpenCode 2.3.0, with the user's own account login
+9. A starter game project at `~/my-first-game`
 
 ### Accounts (the user's own, created during setup)
 
@@ -41,7 +40,6 @@ Take a clean Windows 11 machine to a working Godot development baseline: WSL2 Ub
 - **jq and curl are hard requirements.** curl is what every installer download runs on. jq is kept as part of the base toolchain for future tooling that reads JSON.
 - **ripgrep and unzip are included** as cheap insurance in the same apt step. They cost seconds and a few MB, and remove a class of command-not-found detours when models or asset packs reach for them.
 - **build-essential is out of the base kit.** Nothing in the stack compiles native code, and it is hundreds of MB. It can be added later if a component needs compilation.
-- **Beads stays in its default local setup.** No external server is configured.
 - **Godot topology:** Linux headless Godot inside WSL for OpenCode, Windows Godot GUI for the human. Agent-worked projects live on the WSL side; the human plays them in Windows Godot over the `\\wsl$` path, which is a known limitation.
 - **No Windows safety setting is changed.** There is no PowerShell script in the kit, so no execution-policy question arises. The Windows side installs only Microsoft-catalog apps.
 - **Public install source.** The repository is public and the guide fetches the setup script from a pinned release tag. No credentials are needed for the fetch, and nothing script-shaped lands on the Windows side.
@@ -52,7 +50,6 @@ Pinned to the current latest of each component, checked upstream on 2026-11-16.
 
 | Component | Pin | Evidence |
 | --- | --- | --- |
-| Beads (`bd`) | 1.3.4 | Latest GitHub release (gastownhall/beads), published 2026-11-04. |
 | OpenCode | 2.3.0 | GitHub release v2.3.0, published 2026-11-13; npm `@opencode/cli` latest is 2.3.0. Caution: GitHub's "latest release" endpoint points at the 1.x line (v1.19.5), which is not the newest version; the 2.x line is what this kit installs. |
 | Python | 3.15.2 | Latest release of the 3.15 line (endoflife.date, checked 2026-11-16). Ubuntu apt cannot supply it (24.04 ships 3.12, 26.04 ships 3.14), and a source build would need build-essential, which is out. The setup script therefore installs uv and lets uv install Python. |
 | Godot | 4.7.2 | Latest stable (4.7.2-stable, 2026-08-18). Do not chase future Godot releases casually: opening a project in a newer Godot can upgrade its files one-way. |

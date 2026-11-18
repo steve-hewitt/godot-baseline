@@ -131,10 +131,9 @@ The rest of the setup is one script, and it runs inside Ubuntu. You start it fro
 4. **GitHub CLI**, the tool that signs you in to GitHub (Part 4).
 5. **Python 3**, with the parts it needs to run the AI tools.
 6. **Node.js and Bun**, which OpenCode and its add-ons run on.
-7. **Beads**, the to-do list system used to track work.
-8. **Godot for Linux**, a version with no screen of its own. The AI uses this one to test games by itself.
-9. **OpenCode**, the program where you talk to the AI and it builds games.
-10. **A starter game project**, called `my-first-game`, ready for your first try.
+7. **Godot for Linux**, a version with no screen of its own. The AI uses this one to test games by itself.
+8. **OpenCode**, the program where you talk to the AI and it builds games.
+9. **A starter game project**, called `my-first-game`, ready for your first try.
 
 Every file the script downloads is checked against its maker's published checksum before it is used.
 
@@ -195,7 +194,7 @@ Signing in to GitHub also sets the name and email that git uses on this machine.
 ## What you end up with
 
 - Windows side: VS Code, Godot (for playing and looking at games), Ubuntu running inside Windows.
-- Ubuntu side: Git, Python 3, Node.js, OpenCode, Beads, Godot (for the AI to test games), and a starter project at `~/my-first-game`.
+- Ubuntu side: Git, Python 3, Node.js, OpenCode, Godot (for the AI to test games), and a starter project at `~/my-first-game`.
 - Accounts: GitHub (which sets your git identity) and OpenCode (the AI), both yours.
 
 ## If you need help

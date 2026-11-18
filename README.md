@@ -22,7 +22,6 @@ At v0.1.0. The Ubuntu setup script has been rehearsed end to end on Ubuntu 24.04
 - GitHub CLI
 - uv and Python 3.15.2
 - Node.js and Bun
-- Beads
 - Godot 4.7.2, headless
 - OpenCode
 - A starter Godot project at `~/my-first-game`
