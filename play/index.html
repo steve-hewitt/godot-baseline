@@ -125,6 +125,26 @@
       height: 100%;
       outline: none;
     }
+    .frame:fullscreen {
+      display: grid;
+      place-items: center;
+      aspect-ratio: auto;
+      border: 0;
+      border-radius: 0;
+      background: #05070b;
+    }
+    .frame:fullscreen #game {
+      width: min(100vw, 177.78vh);
+      height: min(56.25vw, 100vh);
+    }
+    #game:fullscreen {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: min(100vw, 177.78vh);
+      height: min(56.25vw, 100vh);
+      background: #05070b;
+    }
     .overlay {
       position: absolute;
       inset: 0;
@@ -262,7 +282,7 @@
     </blockquote>
 
     <div class="frame" id="frame">
-      <canvas id="game" tabindex="0" aria-label="Knight's Hoard game canvas"></canvas>
+      <canvas id="game" width="1280" height="720" tabindex="0" aria-label="Knight's Hoard game canvas"></canvas>
       <div class="overlay" id="overlay">
         <div class="overlay-inner">
           <img src="../icon.svg" alt="">
@@ -324,7 +344,7 @@
           return;
         }
 
-        var engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":158860,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+        var engine = new Engine({"args":[],"canvasResizePolicy":0,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":158860,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
         engine.startGame({
           canvas: canvas,
           onProgress: function (current, total) {
