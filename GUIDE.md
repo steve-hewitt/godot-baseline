@@ -181,6 +181,8 @@ Signing in to GitHub also sets the name and email that git uses on this machine.
 5. Press Enter and let OpenCode take a first swing at planning, building, and testing the game with Linux Godot. This takes a while.
 6. To play your game: open **Godot** on the Windows side. In the open-project box, type `\\wsl$` and press Enter, then browse to your Ubuntu name, then `my-first-game`, and open it. Press the **Play** button (the triangle at the top). Opening it this way can be slow. That is a known limitation, not something you did wrong.
 
+**See the finished example.** OpenCode built *Knight's Hoard* from the sentence above. Play it in your browser at <https://steve-hewitt.github.io/godot-baseline/>.
+
 ## If something goes wrong
 
 - **"I type my password and nothing appears."** That is how Ubuntu works. Type it anyway and press Enter.

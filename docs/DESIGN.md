@@ -44,6 +44,10 @@ Take a clean Windows 11 machine to a working Godot development baseline: WSL2 Ub
 - **No Windows safety setting is changed.** There is no PowerShell script in the kit, so no execution-policy question arises. The Windows side installs only Microsoft-catalog apps.
 - **Public install source.** The repository is public and the guide fetches the setup script from a pinned release tag. No credentials are needed for the fetch, and nothing script-shaped lands on the Windows side.
 
+## Showcase
+
+The repository's GitHub Pages site at <https://steve-hewitt.github.io/godot-baseline/> hosts *Knight's Hoard*, the game built from the guide's one-sentence example prompt. The site is served from the `gh-pages` branch, which contains only the landing page and the static Godot 4.7.2 web export; the game's source lives outside this repository, and the branch is rebuilt by hand. The export is single-threaded, so it needs no COOP/COEP headers and runs on GitHub Pages directly. The showcase is evidence of the baseline, not part of the setup script.
+
 ## Version pins
 
 Pinned to the current latest of each component, checked upstream on 2026-11-16.

@@ -35,6 +35,10 @@ At v0.1.0. The Ubuntu setup script has been rehearsed end to end on Ubuntu 24.04
 
 The human steps are in [GUIDE.md](GUIDE.md). The finish line is giving OpenCode a one-sentence game idea and letting it take a first swing at building and testing it.
 
+## See it in action
+
+[Play Knight's Hoard](https://steve-hewitt.github.io/godot-baseline/): the game OpenCode built from the guide's one-sentence example prompt, exported to the browser with the baseline's pinned Godot 4.7.2.
+
 ## Docs
 
 - [GUIDE.md](GUIDE.md): the step-by-step setup guide.
