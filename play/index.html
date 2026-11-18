@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="Knight's Hoard — a one-prompt Godot game built with the godot-baseline kit.">
+  <title>Knight's Hoard — built with godot-baseline</title>
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --ink: #e8e6df;
+      --muted: #9aa0ad;
+      --bg: #0b0d12;
+      --panel: #121722;
+      --line: #252c3b;
+      --gold: #f2c14e;
+      --blue: #2c4a96;
+      --red: #d0604f;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background:
+        radial-gradient(900px 500px at 50% -20%, #1b2540 0%, transparent 65%),
+        var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem clamp(1rem, 4vw, 2.5rem);
+      border-bottom: 1px solid var(--line);
+      background: rgba(11, 13, 18, 0.75);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
+    }
+    .brand img { width: 28px; height: 28px; display: block; }
+    .bar nav {
+      display: flex;
+      gap: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .bar nav a { color: var(--muted); }
+    .bar nav a:hover { color: var(--ink); }
+    main {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: clamp(1.25rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2.5rem) 3rem;
+      flex: 1;
+    }
+    .lede {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .lede h1 {
+      margin: 0;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      line-height: 1.1;
+      font-weight: 600;
+    }
+    .lede p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .prompt {
+      margin: 0 0 1.25rem;
+      padding: 0.9rem 1.1rem;
+      border-left: 3px solid var(--gold);
+      background: rgba(242, 193, 78, 0.06);
+      color: #d8d3c6;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-style: italic;
+    }
+    .prompt span {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--muted);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-style: normal;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #05070b;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    }
+    #game {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      gap: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
+      background:
+        radial-gradient(600px 360px at 50% 35%, rgba(44, 74, 150, 0.35), transparent 70%),
+        rgba(5, 7, 11, 0.88);
+      transition: opacity 180ms ease;
+    }
+    .overlay.gone { opacity: 0; pointer-events: none; }
+    .overlay-inner { max-width: 34rem; }
+    .overlay img {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 0.75rem;
+      display: block;
+      filter: drop-shadow(0 8px 24px rgba(242, 193, 78, 0.25));
+    }
+    .overlay h2 {
+      margin: 0 0 0.35rem;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 600;
+    }
+    .overlay p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 44px;
+      padding: 0.7rem 1.4rem;
+      border: 1px solid rgba(242, 193, 78, 0.5);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #f6cf6d, var(--gold));
+      color: #241a04;
+      font: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(242, 193, 78, 0.18);
+    }
+    .button:hover { filter: brightness(1.05); }
+    .button:focus-visible { outline: 3px solid #fff3c4; outline-offset: 3px; }
+    .status {
+      min-height: 1.25rem;
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .status.error { color: #f09a8c; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.25rem;
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .controls .key {
+      display: inline-block;
+      min-width: 1.6rem;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      background: var(--panel);
+      color: var(--ink);
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.76rem;
+    }
+    .controls .spacer { flex: 1; }
+    .controls button {
+      min-height: 34px;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .controls button:hover { border-color: #3a465f; }
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 1.1rem clamp(1rem, 4vw, 2.5rem);
+      color: var(--muted);
+      font-size: 0.78rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.25rem;
+      justify-content: space-between;
+    }
+    @media (max-width: 640px) {
+      .bar nav { gap: 0.8rem; }
+      .bar nav a.hide-small { display: none; }
+      .controls { font-size: 0.78rem; }
+      .frame { border-radius: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">
+      <img src="../icon.svg" alt="">
+      <span>Knight's Hoard</span>
+    </div>
+    <nav>
+      <a href="../">Showcase</a>
+      <a class="hide-small" href="https://github.com/steve-hewitt/godot-baseline">godot-baseline</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="lede">
+      <h1>Knight's Hoard</h1>
+      <p>Built from one sentence with <a href="https://github.com/steve-hewitt/godot-baseline">godot-baseline</a>.</p>
+    </div>
+
+    <blockquote class="prompt">
+      &ldquo;Make a simple game where a knight collects coins in a castle and avoids slimes.&rdquo;
+      <span>The prompt from the guide&rsquo;s final step</span>
+    </blockquote>
+
+    <div class="frame" id="frame">
+      <canvas id="game" tabindex="0" aria-label="Knight's Hoard game canvas"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="overlay-inner">
+          <img src="../icon.svg" alt="">
+          <h2>Collect the hoard. Dodge the slimes.</h2>
+          <p>Ten coins, four slimes, three hearts. Sound on. Keyboard required.</p>
+          <button class="button" id="play" type="button">Play Knight's Hoard</button>
+          <div class="status" id="status">Runs in your browser with WebGL 2.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <span><span class="key">WASD</span> / <span class="key">Arrows</span> move</span>
+      <span><span class="key">Space</span> / <span class="key">Shift</span> dash</span>
+      <span><span class="key">Enter</span> start</span>
+      <span><span class="key">R</span> restart</span>
+      <span class="spacer"></span>
+      <button type="button" id="fullscreen">Fullscreen</button>
+    </div>
+  </main>
+
+  <footer>
+    <span>Made with Godot 4.7.2, exported for the web.</span>
+    <span><a href="../">Back to the showcase</a> &middot; <a href="https://github.com/steve-hewitt/godot-baseline">Source</a></span>
+  </footer>
+
+  <noscript>
+    <p style="padding: 1rem; color: #f09a8c;">This game needs JavaScript and WebGL 2.</p>
+  </noscript>
+
+  <script src="index.js"></script>
+  <script>
+    (function () {
+      var canvas = document.getElementById("game");
+      var frame = document.getElementById("frame");
+      var overlay = document.getElementById("overlay");
+      var play = document.getElementById("play");
+      var status = document.getElementById("status");
+      var fullscreen = document.getElementById("fullscreen");
+      var started = false;
+
+      function fail(message) {
+        status.textContent = message;
+        status.classList.add("error");
+      }
+
+      function start() {
+        if (started) return;
+        started = true;
+        overlay.classList.add("gone");
+        status.textContent = "Loading\u2026";
+
+        if (typeof Engine === "undefined") {
+          fail("The game engine did not load. Reload the page and try again.");
+          return;
+        }
+        if (!Engine.isWebGLAvailable()) {
+          fail("This browser does not support WebGL 2. Try a current desktop browser.");
+          return;
+        }
+
+        var engine = new Engine({"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":158860,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4});
+        engine.startGame({
+          canvas: canvas,
+          onProgress: function (current, total) {
+            if (total > 0) {
+              status.textContent = "Loading\u2026 " + Math.round((current / total) * 100) + "%";
+            } else {
+              status.textContent = "Loading\u2026 " + (current / 1048576).toFixed(1) + " MB";
+            }
+          },
+          onPrint: function (text) { console.log(text); },
+          onPrintError: function (text) { console.error(text); }
+        }).then(function () {
+          status.textContent = "";
+          canvas.focus();
+        }).catch(function (error) {
+          console.error(error);
+          fail("The game could not start. Try a current desktop browser with WebGL 2.");
+        });
+      }
+
+      play.addEventListener("click", start);
+      fullscreen.addEventListener("click", function () {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else if (frame.requestFullscreen) {
+          frame.requestFullscreen();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>
+

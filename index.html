@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0d12">
+  <title>Knight's Hoard — built with godot-baseline</title>
+  <meta name="description" content="A playable Godot game built from one sentence with the godot-baseline setup kit.">
+  <meta property="og:title" content="One sentence. One playable game.">
+  <meta property="og:description" content="Knight's Hoard, built from the godot-baseline guide's one-sentence prompt and exported to the browser.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="./">
+      <img src="icon.svg" alt="">
+      <span>godot-baseline</span>
+    </a>
+    <nav>
+      <a href="#game">The game</a>
+      <a href="#how">How it happened</a>
+      <a href="https://github.com/steve-hewitt/godot-baseline">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">A baseline, not a framework</p>
+        <h1>One sentence.<br>One playable game.</h1>
+        <p class="intro">
+          This is what <strong>godot-baseline</strong> produces: a clean Windows 11
+          machine, one setup script, and one prompt to OpenCode.
+        </p>
+
+        <blockquote class="prompt">
+          &ldquo;Make a simple game where a knight collects coins in a castle and avoids slimes.&rdquo;
+          <span>The prompt from the guide&rsquo;s final step</span>
+        </blockquote>
+
+        <div class="actions">
+          <a class="button primary" href="play/">Play Knight&rsquo;s Hoard</a>
+          <a class="button ghost" href="https://github.com/steve-hewitt/godot-baseline/blob/main/GUIDE.md">Read the guide</a>
+        </div>
+        <p class="note">Runs in your browser with Godot 4.7.2. Keyboard required; desktop recommended.</p>
+      </div>
+
+      <aside class="hero-card" id="game">
+        <div class="card-art">
+          <img src="icon.svg" alt="Knight's Hoard shield icon">
+          <span class="card-badge">Playable in browser</span>
+        </div>
+        <div class="card-body">
+          <h2>Knight&rsquo;s Hoard</h2>
+          <p>Collect ten coins. Dodge four slimes. Keep three hearts.</p>
+          <ul class="chips">
+            <li>10 coins</li>
+            <li>4 slimes</li>
+            <li>3 hearts</li>
+          </ul>
+          <a class="card-link" href="play/">Play now <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="stats" aria-label="Project facts">
+      <div><strong>1</strong><span>setup script</span></div>
+      <div><strong>1</strong><span>prompt</span></div>
+      <div><strong>44</strong><span>automated checks</span></div>
+      <div><strong>0</strong><span>external art assets</span></div>
+    </section>
+
+    <section class="how" id="how">
+      <div class="section-head">
+        <p class="eyebrow">The process</p>
+        <h2>From a bare Windows machine to this page</h2>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <span class="step-number">01</span>
+          <h3>Set up the baseline</h3>
+          <p>
+            One command inside WSL2 Ubuntu installs the pinned toolchain: Git,
+            Python, Node, Bun, Godot 4.7.2, and OpenCode. Every download is
+            checksum-verified.
+          </p>
+        </article>
+        <article class="step">
+          <span class="step-number">02</span>
+          <h3>Open the starter project</h3>
+          <p>
+            The script creates a minimal Godot project and leaves you in front of
+            OpenCode. No agents, no commands, no extra setup.
+          </p>
+        </article>
+        <article class="step">
+          <span class="step-number">03</span>
+          <h3>Type one sentence</h3>
+          <p>
+            OpenCode planned the game, wrote the scenes and scripts, drew the art
+            in code, synthesized the sound effects, and tested the result with
+            headless Godot.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="controls" id="controls">
+      <div class="section-head">
+        <p class="eyebrow">Controls</p>
+        <h2>How to play</h2>
+      </div>
+      <dl>
+        <div><dt><span class="key">WASD</span><span class="key">Arrows</span></dt><dd>Move the knight</dd></div>
+        <div><dt><span class="key">Space</span><span class="key">Shift</span></dt><dd>Dash: brief speed and invulnerability</dd></div>
+        <div><dt><span class="key">Enter</span></dt><dd>Start the run</dd></div>
+        <div><dt><span class="key">R</span></dt><dd>Restart after a win or a loss</dd></div>
+        <div><dt><span class="key">F11</span></dt><dd>Toggle fullscreen</dd></div>
+      </dl>
+    </section>
+  </main>
+
+  <footer>
+    <span>Built with <a href="https://github.com/steve-hewitt/godot-baseline">godot-baseline</a>, Godot 4.7.2, and one prompt.</span>
+    <span><a href="https://github.com/steve-hewitt/godot-baseline">Source &amp; guide</a></span>
+  </footer>
+</body>
+</html>
