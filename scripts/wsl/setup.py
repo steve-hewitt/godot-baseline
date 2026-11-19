@@ -714,9 +714,7 @@ def step_opencode(state, skip_auth):
         if os.path.lexists(opencode_path):
             record_created_path(opencode_path)
     _ensure_opencode_config(state)
-    code, out = run(["opencode", "auth", "list"], timeout=60)
-    authed = code == 0 and bool(out.strip()) and "0 credentials" not in out
-    if authed:
+    if _opencode_signed_in():
         return True
     if skip_auth:
         say("Skipping the OpenCode sign-in (testing mode).")
@@ -786,6 +784,27 @@ def _soft(cmd, timeout=300):
         return 1, str(err)
 
 
+def _opencode_signed_in():
+    """True only when OpenCode lists a stored credential.
+    Ask for JSON so the answer does not depend on the wording of the empty
+    state ("0 credentials" in older builds, "No authenticated integrations"
+    in 2.3.0). Returns False on any error, so a missing sign-in warns."""
+    code, out = _soft(["opencode", "auth", "list", "--format", "json"], timeout=60)
+    if code == 0:
+        try:
+            entries = json.loads(out)
+        except ValueError:
+            entries = None
+        if isinstance(entries, list):
+            return bool(entries)
+    # Builds that do not know --format still mark each saved sign-in as
+    # "stored" in their normal list.
+    code, out = _soft(["opencode", "auth", "list"], timeout=60)
+    if code != 0:
+        return False
+    return any(line.strip().endswith("stored") for line in out.splitlines())
+
+
 def doctor(write_report=True):
     """Returns (hard_failures, lines). Each line is (mark, text)."""
     lines = []
@@ -826,9 +845,7 @@ def doctor(write_report=True):
     except Exception:
         model_ok = False
     check(model_ok, "OpenCode default model is set", DEFAULT_MODEL, warn_only=True)
-    code, out = _soft(["opencode", "auth", "list"], timeout=60)
-    check(code == 0 and bool(out.strip()) and "0 credentials" not in out,
-          "Signed in to OpenCode", warn_only=True)
+    check(_opencode_signed_in(), "Signed in to OpenCode", warn_only=True)
     starter = os.path.join(STARTER_DIR, "project.godot")
     check(os.path.exists(starter), "Starter project exists", warn_only=True)
     if write_report and not DRY_RUN:
